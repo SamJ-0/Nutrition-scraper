@@ -14,8 +14,7 @@ try {
   console.log("Local selectors not loaded:", err.message);
 }
 
-const url =
-  "https://www.asda.com/groceries/product/semi-skimmed-milk/asda-british-milk-semi-skimmed-4-pints-2272ml/165468";
+const url = "";
 
 const rawFoodData = {
   name: "",
