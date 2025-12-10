@@ -1,28 +1,26 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 import fs from "fs";
+import { labelDictionary } from "./dictionary.js";
+import { selectors as defaultSelectors } from "./selectors.js";
 
-const url = "";
+let selectors = defaultSelectors;
+
+try {
+  selectors = (await import("./selectors.local.js")).selectors;
+  console.log("Running selector import block...");
+} catch (err) {
+  console.log("Using default selectors:", selectors);
+  console.log("Local selectors not loaded:", err.message);
+}
+
+const url =
+  "https://www.asda.com/groceries/product/semi-skimmed-milk/asda-british-milk-semi-skimmed-4-pints-2272ml/165468";
 
 const rawFoodData = {
   name: "",
   per100g: { energy: { kcal: "", kj: "" } },
   perServing: { energy: { kcal: "", kj: "" } },
-};
-
-const labelDictionary = {
-  fat: "fat",
-  "fat (g)": "fat",
-  "total fat": "fat",
-  "total fats": "fat",
-  "of which saturates": "satFat",
-  "of which saturates (g)": "satFat",
-  "saturated fat": "satFat",
-  Carbohydrate: "Carbohydrate",
-  "Carbohydrate (g)": "Carbohydrate",
-  fibre: "fibre",
-  protein: "protein",
-  salt: "salt",
 };
 
 async function nutritionScrape() {
@@ -42,7 +40,7 @@ async function nutritionScrape() {
     let kjPerServing;
     const kjPerKcal = 4.184;
 
-    $(".tableHeading th").each((i, head) => {
+    $(selectors.heading + "th").each((i, head) => {
       tableHeading = $(head).text().toLowerCase();
 
       if (
@@ -62,10 +60,10 @@ async function nutritionScrape() {
       }
     });
 
-    const productName = $(".product-heading").find("h1").text();
+    const productName = $(selectors.productName).find("h1").text();
     rawFoodData["name"] = productName;
 
-    $(".nutrition-data tr").each((i, row) => {
+    $(selectors.nutritionData + "tr").each((i, row) => {
       const label = $($(row).find("td")[0]).text().toLowerCase();
       const labelMapping = labelDictionary[label];
       const nutritionRow = $(row).find("td").text().toLowerCase();
@@ -76,8 +74,6 @@ async function nutritionScrape() {
       const valuesPerServing = $($(row).find("td")[perServingIndex])
         .text()
         .toLowerCase();
-
-      console.log(labelMapping);
 
       if (label.includes("energy")) {
         if (nutritionRow.includes("kcal") && nutritionRow.includes("kj")) {

@@ -6,4 +6,6 @@ backend/*.db
 
 backend/node_modules/
 
+**/*.local.js
+
 backend/.env
