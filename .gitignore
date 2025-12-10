@@ -1,0 +1,9 @@
+frontend/
+
+backend/rawFoodData.json
+
+backend/*.db
+
+backend/node_modules/
+
+backend/.env
