@@ -1,11 +1,11 @@
 frontend/
 
-backend/rawFoodData.json
+backend_rename/rawFoodData.json
 
-backend/*.db
+backend_rename/*.db
 
-backend/node_modules/
+backend_rename/node_modules/
 
 **/*.local.js
 
-backend/.env
+backend_rename/.env

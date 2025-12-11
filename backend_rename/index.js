@@ -66,7 +66,58 @@ async function nutritionScrape() {
       rawFoodData["per100g"][label] = valuesPer100g;
       rawFoodData["perServing"][label] = valuesPerServing;
       rawFoodData["referenceIntake"][label] = referenceIntake;
+
+      // const labelMapping = labelDictionary[label];
+
+      // if (label.includes("energy")) {
+      //   if (nutritionRow.includes("kcal") && nutritionRow.includes("kj")) {
+      //     const energyArrPer100 = valuesPer100g.split("/");
+      //     const energyArrPerServing = valuesPerServing.split("/");
+
+      //     kjPer100g = energyArrPer100[0].trim();
+      //     kcalPer100g = energyArrPer100[1].trim();
+
+      //     kjPerServing = energyArrPerServing[0].trim();
+      //     kcalPerServing = energyArrPerServing[1].trim();
+      //   } else if (nutritionRow.includes("kcal")) {
+      //     kcalPer100g = valuesPer100g;
+      //     kcalPerServing = valuesPerServing;
+      //   } else if (nutritionRow.includes("kj")) {
+      //     kjPer100g = valuesPer100g;
+      //     kjPerServing = valuesPerServing;
+      //   }
+      // }
+
+      // if (label !== "" && !label.includes("energy") && valuesPer100g !== "") {
+      //   rawFoodData["per100g"][label] = valuesPer100g;
+      // }
+
+      // if (
+      //   label !== "" &&
+      //   !label.includes("energy") &&
+      //   valuesPerServing !== ""
+      // ) {
+      //   rawFoodData["perServing"]["servingSize"] = headingPerServing;
+      //   rawFoodData["perServing"][label] = valuesPerServing;
+      // }
     });
+
+    // if (kcalPer100g === undefined && kcalPerServing === undefined) {
+    //   kcalPer100g = Math.round(parseInt(kjPer100g) / kjPerKcal).toString();
+    //   kcalPerServing = Math.round(
+    //     parseInt(kjPerServing) / kjPerKcal
+    //   ).toString();
+    // }
+
+    // if (per100gIndex !== undefined) {
+    //   rawFoodData.per100g.energy.kcal = kcalPer100g;
+    //   rawFoodData.per100g.energy.kj = kjPer100g;
+    // }
+
+    // if (perServingIndex !== undefined) {
+    //   rawFoodData.perServing.energy.kcal = kcalPerServing;
+    //   rawFoodData.perServing.energy.kj = kjPerServing;
+    // }
 
     fs.writeFileSync("rawFoodData.json", JSON.stringify(rawFoodData));
 
