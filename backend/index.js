@@ -1,7 +1,6 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
-import fs from "fs";
-import { labelDictionary } from "./dictionary.js";
+import cleanData from "./dataCleaning.js";
 import { selectors as defaultSelectors } from "./selectors.js";
 
 let selectors = defaultSelectors;
@@ -32,7 +31,6 @@ async function nutritionScrape(productUrl) {
     const $ = cheerio.load(html);
 
     const tableHeaderArr = [];
-    const kjPerKcal = 4.184;
 
     $(selectors.heading + "th").each((i, head) => {
       const tableHeading = $(head).text().toLowerCase();
@@ -66,9 +64,10 @@ async function nutritionScrape(productUrl) {
       rawFoodData["referenceIntake"][label] = referenceIntake;
     });
 
+    cleanData(rawFoodData);
     return rawFoodData;
   } catch (error) {
-    return { error };
+    console.error(error);
   }
 }
 
