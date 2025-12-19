@@ -12,25 +12,23 @@ try {
   console.log("Using default selectors:", selectors);
 }
 
-const url = "";
-
-const rawFoodData = {
-  tableHeader: [],
-  name: "",
-  per100g: {},
-  perServing: {},
-  referenceIntake: {},
-};
-
-const indices = {
-  per100gIndex: "",
-  perServingIndex: "",
-  referenceIndex: "",
-};
-
-async function nutritionScrape() {
+async function nutritionScrape(productUrl) {
   try {
-    const { data: html } = await axios.get(url);
+    const rawFoodData = {
+      tableHeader: [],
+      name: "",
+      per100g: {},
+      perServing: {},
+      referenceIntake: {},
+    };
+
+    const indices = {
+      per100gIndex: "",
+      perServingIndex: "",
+      referenceIndex: "",
+    };
+
+    const { data: html } = await axios.get(productUrl);
     const $ = cheerio.load(html);
 
     const tableHeaderArr = [];
@@ -40,7 +38,7 @@ async function nutritionScrape() {
       const tableHeading = $(head).text().toLowerCase();
       tableHeaderArr.push(tableHeading);
 
-      getTableIndexes(i, tableHeading);
+      getTableIndexes(i, indices, tableHeading);
     });
 
     rawFoodData["tableHeader"] = tableHeaderArr;
@@ -66,70 +64,15 @@ async function nutritionScrape() {
       rawFoodData["per100g"][label] = valuesPer100g;
       rawFoodData["perServing"][label] = valuesPerServing;
       rawFoodData["referenceIntake"][label] = referenceIntake;
-
-      // const labelMapping = labelDictionary[label];
-
-      // if (label.includes("energy")) {
-      //   if (nutritionRow.includes("kcal") && nutritionRow.includes("kj")) {
-      //     const energyArrPer100 = valuesPer100g.split("/");
-      //     const energyArrPerServing = valuesPerServing.split("/");
-
-      //     kjPer100g = energyArrPer100[0].trim();
-      //     kcalPer100g = energyArrPer100[1].trim();
-
-      //     kjPerServing = energyArrPerServing[0].trim();
-      //     kcalPerServing = energyArrPerServing[1].trim();
-      //   } else if (nutritionRow.includes("kcal")) {
-      //     kcalPer100g = valuesPer100g;
-      //     kcalPerServing = valuesPerServing;
-      //   } else if (nutritionRow.includes("kj")) {
-      //     kjPer100g = valuesPer100g;
-      //     kjPerServing = valuesPerServing;
-      //   }
-      // }
-
-      // if (label !== "" && !label.includes("energy") && valuesPer100g !== "") {
-      //   rawFoodData["per100g"][label] = valuesPer100g;
-      // }
-
-      // if (
-      //   label !== "" &&
-      //   !label.includes("energy") &&
-      //   valuesPerServing !== ""
-      // ) {
-      //   rawFoodData["perServing"]["servingSize"] = headingPerServing;
-      //   rawFoodData["perServing"][label] = valuesPerServing;
-      // }
     });
 
-    // if (kcalPer100g === undefined && kcalPerServing === undefined) {
-    //   kcalPer100g = Math.round(parseInt(kjPer100g) / kjPerKcal).toString();
-    //   kcalPerServing = Math.round(
-    //     parseInt(kjPerServing) / kjPerKcal
-    //   ).toString();
-    // }
-
-    // if (per100gIndex !== undefined) {
-    //   rawFoodData.per100g.energy.kcal = kcalPer100g;
-    //   rawFoodData.per100g.energy.kj = kjPer100g;
-    // }
-
-    // if (perServingIndex !== undefined) {
-    //   rawFoodData.perServing.energy.kcal = kcalPerServing;
-    //   rawFoodData.perServing.energy.kj = kjPerServing;
-    // }
-
-    fs.writeFileSync("rawFoodData.json", JSON.stringify(rawFoodData));
-
-    console.log(rawFoodData);
+    return rawFoodData;
   } catch (error) {
-    console.log(error);
+    return { error };
   }
 }
 
-nutritionScrape();
-
-function getTableIndexes(i, tableHeading) {
+function getTableIndexes(i, indices, tableHeading) {
   if (tableHeading.includes("reference") || tableHeading.includes("ri")) {
     indices["referenceIndex"] = i;
   } else if (tableHeading.includes("100")) {
@@ -141,3 +84,5 @@ function getTableIndexes(i, tableHeading) {
     indices["perServingIndex"] = i;
   }
 }
+
+export default nutritionScrape;
