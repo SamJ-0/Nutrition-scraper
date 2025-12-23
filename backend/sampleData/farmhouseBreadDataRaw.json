@@ -1,0 +1,45 @@
+{
+  "tableHeader": [
+    "typical values",
+    "per 100g of product",
+    "per average slice (42.7g)",
+    "reference intake (adult)"
+  ],
+  "name": "Warburtons Farmhouse 800g",
+  "per100g": {
+    "": "",
+    "energy": "1021kj",
+    "fat": "2.5g",
+    "of which saturates": "0.5g",
+    "carbohydrate": "45.0g",
+    "of which sugars": "2.2g",
+    "fibre": "2.3g",
+    "protein": "9.0g",
+    "salt": "0.98g",
+    "contains 19 slices": ""
+  },
+  "perServing": {
+    "": "",
+    "energy": "436kj",
+    "fat": "1.1g",
+    "of which saturates": "0.2g",
+    "carbohydrate": "19.2g",
+    "of which sugars": "0.9g",
+    "fibre": "1.0g",
+    "protein": "3.8g",
+    "salt": "0.42g",
+    "contains 19 slices": ""
+  },
+  "referenceIntake": {
+    "": "",
+    "energy": "8400kj",
+    "fat": "70g",
+    "of which saturates": "20g",
+    "carbohydrate": "260g",
+    "of which sugars": "90g",
+    "fibre": "",
+    "protein": "50g",
+    "salt": "6g",
+    "contains 19 slices": ""
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "tableHeader": [
+    "typical values",
+    "per 100 gram",
+    "per serving (30g**)",
+    "% ri per serving"
+  ],
+  "name": "Tony's Chocolonely Caramel Sea Salt Milk 180g",
+  "per100g": {
+    "": "",
+    "energy": "2247 kj / 537 kcal",
+    "fat": "32g",
+    "of which saturates": "19g",
+    "carbohydrate": "54 g",
+    "of which sugars": "51 g",
+    "protein": "6.9 g",
+    "salt": "0.69 g",
+    "*reference intake of an average adult (8400 kj / 2000 kcal)": "",
+    "**this bar contains 6 servings": ""
+  },
+  "perServing": {
+    "": "",
+    "energy": "674 kj / 161 kcal",
+    "fat": "10g",
+    "of which saturates": "6g",
+    "carbohydrate": "16g",
+    "of which sugars": "15g",
+    "protein": "2.1 g",
+    "salt": "0.21 g",
+    "*reference intake of an average adult (8400 kj / 2000 kcal)": "",
+    "**this bar contains 6 servings": ""
+  },
+  "referenceIntake": {
+    "": "",
+    "energy": "8%",
+    "fat": "14%",
+    "of which saturates": "29%",
+    "carbohydrate": "6%",
+    "of which sugars": "17%",
+    "protein": "4%",
+    "salt": "3%",
+    "*reference intake of an average adult (8400 kj / 2000 kcal)": "",
+    "**this bar contains 6 servings": ""
+  }
+}
