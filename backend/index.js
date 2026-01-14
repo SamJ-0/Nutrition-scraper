@@ -2,7 +2,13 @@ import axios from "axios";
 import * as cheerio from "cheerio";
 import cleanData from "./dataCleaning.js";
 import { selectors as defaultSelectors } from "./selectors.js";
+import { readFile } from "fs/promises";
 
+const farmhouseBreadDataRaw = JSON.parse(
+  await readFile(
+    new URL("./sampleData/farmhouseBreadDataRaw.json", import.meta.url)
+  )
+);
 let selectors = defaultSelectors;
 
 try {
@@ -64,7 +70,6 @@ async function nutritionScrape(productUrl) {
       rawFoodData["referenceIntake"][label] = referenceIntake;
     });
 
-    cleanData(rawFoodData);
     return rawFoodData;
   } catch (error) {
     console.error(error);
@@ -83,5 +88,7 @@ function getTableIndexes(i, indices, tableHeading) {
     indices["perServingIndex"] = i;
   }
 }
+
+cleanData(farmhouseBreadDataRaw);
 
 export default nutritionScrape;
