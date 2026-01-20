@@ -1,14 +1,16 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
-import cleanData from "./dataCleaning.js";
 import { selectors as defaultSelectors } from "./selectors.js";
 import { readFile } from "fs/promises";
+import mapToLabel from "./dataCleaning.js";
+import cleanedData from "./cleanedData.js";
 
-const farmhouseBreadDataRaw = JSON.parse(
+const sampleDataRaw = JSON.parse(
   await readFile(
-    new URL("./sampleData/farmhouseBreadDataRaw.json", import.meta.url)
-  )
+    new URL("./sampleData/farmhouseBreadDataRaw.json", import.meta.url),
+  ),
 );
+
 let selectors = defaultSelectors;
 
 try {
@@ -54,7 +56,7 @@ async function nutritionScrape(productUrl) {
       const nutritionTd = $(row).find("td");
 
       const nutritionRow = nutritionTd.text().toLowerCase();
-      const label = $(nutritionTd[0]).text().toLowerCase();
+      const initialLabel = $(nutritionTd[0]).text().toLowerCase();
       const valuesPer100g = $(nutritionTd[indices.per100gIndex])
         .text()
         .toLowerCase();
@@ -65,9 +67,9 @@ async function nutritionScrape(productUrl) {
         .text()
         .toLowerCase();
 
-      rawFoodData["per100g"][label] = valuesPer100g;
-      rawFoodData["perServing"][label] = valuesPerServing;
-      rawFoodData["referenceIntake"][label] = referenceIntake;
+      rawFoodData["per100g"][initialLabel] = valuesPer100g;
+      rawFoodData["perServing"][initialLabel] = valuesPerServing;
+      rawFoodData["referenceIntake"][initialLabel] = referenceIntake;
     });
 
     return rawFoodData;
@@ -89,6 +91,16 @@ function getTableIndexes(i, indices, tableHeading) {
   }
 }
 
-cleanData(farmhouseBreadDataRaw);
+const samplePer100 = Object.entries(sampleDataRaw.per100g);
+const samplePerServing = Object.entries(sampleDataRaw.perServing);
 
+samplePer100.forEach(([key, value]) => {
+  mapToLabel(key, value, "per100g");
+});
+
+samplePerServing.forEach(([key, value]) => {
+  mapToLabel(key, value, "perServing");
+});
+
+console.log(cleanedData);
 export default nutritionScrape;

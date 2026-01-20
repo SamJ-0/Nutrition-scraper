@@ -1,40 +1,23 @@
 import { labelDictionary } from "./dictionary.js";
+import cleanedData from "./cleanedData.js";
 
-const cleanedData = {
-  per100g: {
-    energy: "",
-    fat: "",
-    satFat: "",
-    carbohydrates: "",
-    sugars: "",
-    fibre: "",
-    protein: "",
-    salt: "",
-  },
-  perServing: {
-    energy: "",
-    fat: "",
-    satFat: "",
-    carbohydrates: "",
-    sugars: "",
-    fibre: "",
-    protein: "",
-    salt: "",
-  },
-  metaData: {
-    servingSize: "",
-    packWeight: "",
-  },
-};
+function mapToLabel(label, value, category) {
+  const labelMapping = labelDictionary[label];
+  removeUndefinedLabels(labelMapping, value, category);
+}
 
-function cleanData(rawObjectData) {
-  for (const [key, value] of Object.entries(rawObjectData)) {
-    console.log(`${key}: ${value}`);
+function removeUndefinedLabels(label, value, category) {
+  if (label != undefined) {
+    cleanedProductData(label, value, category);
   }
+}
+
+function cleanedProductData(label, value, category) {
+  cleanedData[category][label] = value;
 }
 
 // function convertKjToKcals() {
 //     const kjPerKcal = 4.184;
 // }
 
-export default cleanData;
+export default mapToLabel;
