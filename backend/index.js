@@ -1,15 +1,6 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 import { selectors as defaultSelectors } from "./selectors.js";
-import { readFile } from "fs/promises";
-import mapToLabel from "./dataCleaning.js";
-import cleanedData from "./cleanedData.js";
-
-const sampleDataRaw = JSON.parse(
-  await readFile(
-    new URL("./sampleData/farmhouseBreadDataRaw.json", import.meta.url),
-  ),
-);
 
 let selectors = defaultSelectors;
 
@@ -43,11 +34,10 @@ async function nutritionScrape(productUrl) {
     $(selectors.heading + "th").each((i, head) => {
       const tableHeading = $(head).text().toLowerCase();
       tableHeaderArr.push(tableHeading);
-
-      getTableIndexes(i, indices, tableHeading);
     });
 
     rawFoodData["tableHeader"] = tableHeaderArr;
+    getTableIndexes(rawFoodData.tableHeader);
 
     const productName = $(selectors.productName).find("h1").text();
     rawFoodData["name"] = productName;
@@ -55,7 +45,6 @@ async function nutritionScrape(productUrl) {
     $(selectors.nutritionData + "tr").each((i, row) => {
       const nutritionTd = $(row).find("td");
 
-      const nutritionRow = nutritionTd.text().toLowerCase();
       const initialLabel = $(nutritionTd[0]).text().toLowerCase();
       const valuesPer100g = $(nutritionTd[indices.per100gIndex])
         .text()
@@ -78,29 +67,14 @@ async function nutritionScrape(productUrl) {
   }
 }
 
-function getTableIndexes(i, indices, tableHeading) {
-  if (tableHeading.includes("reference") || tableHeading.includes("ri")) {
-    indices["referenceIndex"] = i;
-  } else if (tableHeading.includes("100")) {
-    indices["per100gIndex"] = i;
-  } else if (
-    tableHeading.includes("serving") ||
-    (tableHeading.includes("per") && !tableHeading.includes("100"))
-  ) {
-    indices["perServingIndex"] = i;
+function getTableIndexes(tableHeaderData) {
+  if (tableHeaderData.length >= 2) {
+    tableHeaderData.forEach((header, i) => {
+      console.log(i, header);
+    });
+  } else {
+    console.log("There isn't enough data!");
   }
 }
 
-const samplePer100 = Object.entries(sampleDataRaw.per100g);
-const samplePerServing = Object.entries(sampleDataRaw.perServing);
-
-samplePer100.forEach(([key, value]) => {
-  mapToLabel(key, value, "per100g");
-});
-
-samplePerServing.forEach(([key, value]) => {
-  mapToLabel(key, value, "perServing");
-});
-
-console.log(cleanedData);
 export default nutritionScrape;

@@ -3,10 +3,10 @@ import cleanedData from "./cleanedData.js";
 
 function mapToLabel(label, value, category) {
   const labelMapping = labelDictionary[label];
-  removeUndefinedLabels(labelMapping, value, category);
+  filterUndefinedLabels(labelMapping, value, category);
 }
 
-function removeUndefinedLabels(label, value, category) {
+function filterUndefinedLabels(label, value, category) {
   if (label != undefined) {
     cleanedProductData(label, value, category);
   }
