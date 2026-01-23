@@ -21,9 +21,9 @@ async function nutritionScrape(productUrl) {
     };
 
     const indices = {
-      per100gIndex: "",
-      perServingIndex: "",
-      referenceIndex: "",
+      per100: "",
+      perServing: "",
+      referenceIntake: "",
     };
 
     const { data: html } = await axios.get(productUrl);
@@ -37,7 +37,7 @@ async function nutritionScrape(productUrl) {
     });
 
     rawFoodData["tableHeader"] = tableHeaderArr;
-    getTableIndexes(rawFoodData.tableHeader);
+    getTableIndexes(rawFoodData.tableHeader, indices);
 
     const productName = $(selectors.productName).find("h1").text();
     rawFoodData["name"] = productName;
@@ -46,13 +46,11 @@ async function nutritionScrape(productUrl) {
       const nutritionTd = $(row).find("td");
 
       const initialLabel = $(nutritionTd[0]).text().toLowerCase();
-      const valuesPer100g = $(nutritionTd[indices.per100gIndex])
+      const valuesPer100g = $(nutritionTd[indices.per100]).text().toLowerCase();
+      const valuesPerServing = $(nutritionTd[indices.perServing])
         .text()
         .toLowerCase();
-      const valuesPerServing = $(nutritionTd[indices.perServingIndex])
-        .text()
-        .toLowerCase();
-      const referenceIntake = $(nutritionTd[indices.referenceIndex])
+      const referenceIntake = $(nutritionTd[indices.referenceIntake])
         .text()
         .toLowerCase();
 
@@ -67,14 +65,23 @@ async function nutritionScrape(productUrl) {
   }
 }
 
-function getTableIndexes(tableHeaderData) {
-  if (tableHeaderData.length >= 2) {
-    tableHeaderData.forEach((header, i) => {
-      console.log(i, header);
-    });
-  } else {
-    console.log("There isn't enough data!");
+function getTableIndexes(tableHeaderData, indices) {
+  const per100 = "100";
+  const referenceIntake = ["ri", "reference", "intake", "†"];
+
+  if (tableHeaderData.length < 1) {
+    console.log("Not enough data exists");
   }
+
+  console.log(filterArray(tableHeaderData, per100));
+
+  referenceIntake.map((header) => {
+    console.log(filterArray(tableHeaderData, header));
+  });
+}
+
+function filterArray(arr, find) {
+  return arr.findIndex((str) => str.includes(find));
 }
 
 export default nutritionScrape;
