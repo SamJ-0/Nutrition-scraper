@@ -67,21 +67,61 @@ async function nutritionScrape(productUrl) {
 
 function getTableIndexes(tableHeaderData, indices) {
   const per100 = "100";
-  const referenceIntake = ["ri", "reference", "intake", "†"];
+  const strongRefIntake = ["% ri", "reference intake"];
+  const weakRefIntake = ["ri", "reference", "intake", "†"];
+  const headerLength = tableHeaderData.length;
+  const takenIndex = [];
 
-  if (tableHeaderData.length < 1) {
+  if (headerLength < 1) {
     console.log("Not enough data exists");
   }
 
-  console.log(filterArray(tableHeaderData, per100));
+  const filterPer100 = filterArray(tableHeaderData, per100);
+  const typicalValues = filterArray(tableHeaderData, "typical values");
 
-  referenceIntake.map((header) => {
-    console.log(filterArray(tableHeaderData, header));
-  });
+  if (typicalValues !== -1) {
+    takenIndex.push(typicalValues);
+  }
+
+  if (filterPer100 !== -1 && indices.per100 === "") {
+    indices.per100 = filterPer100;
+    takenIndex.push(filterPer100);
+  }
+
+  // refIntake.forEach((header, i) => {
+  //   const filterRefIndex = tableHeaderData.filter((heading) =>
+  //     heading.includes(header),
+  //   );
+  //   if (
+  //     indices.per100 !== "" &&
+  //     filterRefIndex !== -1 &&
+  //     indices.referenceIntake === ""
+  //   ) {
+  //     console.log(header);
+  //     indices.referenceIntake = filterRefIndex;
+  //     takenIndex.push(filterRefIndex);
+  //   } else {
+  //     console.log(header);
+  //   }
+  // });
+
+  indices.perServing = findMissingNum(headerLength, takenIndex);
 }
 
 function filterArray(arr, find) {
   return arr.findIndex((str) => str.includes(find));
+}
+
+function findMissingNum(length, arr) {
+  let count = 0;
+
+  for (let i = 0; i <= length; i++) {
+    if (arr.includes(count)) {
+      count++;
+    } else {
+      return count;
+    }
+  }
 }
 
 export default nutritionScrape;
