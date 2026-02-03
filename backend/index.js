@@ -67,49 +67,42 @@ async function nutritionScrape(productUrl) {
 
 function getTableIndexes(tableHeaderData, indices) {
   const per100 = "100";
-  const strongRefIntake = ["% ri", "reference intake"];
-  const weakRefIntake = ["ri", "reference", "intake", "†"];
-  const headerLength = tableHeaderData.length;
-  const takenIndex = [];
+  const refIntake = [
+    "ri",
+    "reference",
+    "intake",
+    "intake*",
+    "%ri",
+    "†ri",
+    "†",
+    "ri*",
+  ];
+  const count = {};
 
-  if (headerLength < 1) {
+  if (tableHeaderData.length < 1) {
     console.log("Not enough data exists");
   }
 
-  const filterPer100 = filterArray(tableHeaderData, per100);
-  const typicalValues = filterArray(tableHeaderData, "typical values");
+  console.log(tableHeaderData);
 
-  if (typicalValues !== -1) {
-    takenIndex.push(typicalValues);
+  const findPer100 = tableHeaderData.findIndex((word) => word.includes(per100));
+  indices.per100 = findPer100;
+
+  const tableHeading = tableHeaderData.map((heading) => {
+    return heading.split(" ");
+  });
+
+  for (let i = 0; i < tableHeading.length; i++) {
+    refIntake.forEach((word) => {
+      for (let j = 0; j < tableHeading[i].length; j++) {
+        if (word === tableHeading[i][j]) {
+          count[i] = (count[i] || 0) + 1;
+        }
+      }
+    });
   }
 
-  if (filterPer100 !== -1 && indices.per100 === "") {
-    indices.per100 = filterPer100;
-    takenIndex.push(filterPer100);
-  }
-
-  // refIntake.forEach((header, i) => {
-  //   const filterRefIndex = tableHeaderData.filter((heading) =>
-  //     heading.includes(header),
-  //   );
-  //   if (
-  //     indices.per100 !== "" &&
-  //     filterRefIndex !== -1 &&
-  //     indices.referenceIntake === ""
-  //   ) {
-  //     console.log(header);
-  //     indices.referenceIntake = filterRefIndex;
-  //     takenIndex.push(filterRefIndex);
-  //   } else {
-  //     console.log(header);
-  //   }
-  // });
-
-  indices.perServing = findMissingNum(headerLength, takenIndex);
-}
-
-function filterArray(arr, find) {
-  return arr.findIndex((str) => str.includes(find));
+  console.log(count);
 }
 
 function findMissingNum(length, arr) {
