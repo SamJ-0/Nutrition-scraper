@@ -21,6 +21,7 @@ async function nutritionScrape(productUrl) {
     };
 
     const indices = {
+      typicalValues: "",
       per100: "",
       perServing: "",
       referenceIntake: "",
@@ -83,7 +84,10 @@ function getTableIndexes(tableHeaderData, indices) {
     console.log("Not enough data exists");
   }
 
-  console.log(tableHeaderData);
+  const typicalValues = tableHeaderData.findIndex((word) =>
+    word.includes("typical values"),
+  );
+  indices.typicalValues = typicalValues;
 
   const findPer100 = tableHeaderData.findIndex((word) => word.includes(per100));
   indices.per100 = findPer100;
@@ -102,7 +106,20 @@ function getTableIndexes(tableHeaderData, indices) {
     });
   }
 
-  console.log(count);
+  let currentVal = 0;
+  let refIntakeKey;
+
+  for (const [key, value] of Object.entries(count)) {
+    if (value > currentVal) {
+      refIntakeKey = key;
+      indices.referenceIntake = key;
+      currentVal = value;
+    }
+  }
+  indices.perServing = findMissingNum(
+    tableHeaderData.length,
+    Object.values(indices),
+  );
 }
 
 function findMissingNum(length, arr) {
