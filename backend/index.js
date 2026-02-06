@@ -1,6 +1,7 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 import { selectors as defaultSelectors } from "./selectors.js";
+import mapToLabel from "./dataCleaning.js";
 
 let selectors = defaultSelectors;
 
@@ -12,13 +13,14 @@ try {
 
 async function nutritionScrape(productUrl) {
   try {
-    const rawFoodData = {
-      tableHeader: [],
-      name: "",
-      per100g: {},
-      perServing: {},
-      referenceIntake: {},
-    };
+    const rawFoodData = [];
+    // const rawFoodData = {
+    //   tableHeader: [],
+    //   name: "",
+    //   per100g: {},
+    //   perServing: {},
+    //   referenceIntake: {},
+    // };
 
     const indices = {
       typicalValues: "",
@@ -37,15 +39,17 @@ async function nutritionScrape(productUrl) {
       tableHeaderArr.push(tableHeading);
     });
 
-    rawFoodData["tableHeader"] = tableHeaderArr;
-    getTableIndexes(rawFoodData.tableHeader, indices);
+    // rawFoodData["tableHeader"] = tableHeaderArr;
+    // getTableIndexes(rawFoodData.tableHeader, indices);
 
     const productName = $(selectors.productName).find("h1").text();
-    rawFoodData["name"] = productName;
+    // rawFoodData["name"] = productName;
 
     $(selectors.nutritionData + "tr").each((i, row) => {
       const nutritionTd = $(row).find("td");
 
+      const nutritionRow = $(row).find("td").text().toLowerCase();
+      console.log(nutritionRow);
       const initialLabel = $(nutritionTd[0]).text().toLowerCase();
       const valuesPer100g = $(nutritionTd[indices.per100]).text().toLowerCase();
       const valuesPerServing = $(nutritionTd[indices.perServing])
@@ -55,11 +59,16 @@ async function nutritionScrape(productUrl) {
         .text()
         .toLowerCase();
 
-      rawFoodData["per100g"][initialLabel] = valuesPer100g;
-      rawFoodData["perServing"][initialLabel] = valuesPerServing;
-      rawFoodData["referenceIntake"][initialLabel] = referenceIntake;
-    });
+      if (nutritionRow !== "") {
+        rawFoodData.push(nutritionRow);
+      }
 
+      // rawFoodData["per100g"][initialLabel] = valuesPer100g;
+      // rawFoodData["perServing"][initialLabel] = valuesPerServing;
+      // rawFoodData["referenceIntake"][initialLabel] = referenceIntake;
+    });
+    // mapToLabel(rawFoodData, "per100g");
+    // console.log(rawFoodData);
     return rawFoodData;
   } catch (error) {
     console.error(error);
@@ -107,11 +116,9 @@ function getTableIndexes(tableHeaderData, indices) {
   }
 
   let currentVal = 0;
-  let refIntakeKey;
 
   for (const [key, value] of Object.entries(count)) {
     if (value > currentVal) {
-      refIntakeKey = key;
       indices.referenceIntake = key;
       currentVal = value;
     }

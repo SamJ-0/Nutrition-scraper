@@ -1,6 +1,7 @@
 const cleanedData = {
   per100g: {
-    energy: "",
+    energy_kj: "",
+    energy_kcals: "",
     fat: "",
     satFat: "",
     carbohydrates: "",
@@ -10,7 +11,8 @@ const cleanedData = {
     salt: "",
   },
   perServing: {
-    energy: "",
+    energy_kj: "",
+    energy_kcals: "",
     fat: "",
     satFat: "",
     carbohydrates: "",
