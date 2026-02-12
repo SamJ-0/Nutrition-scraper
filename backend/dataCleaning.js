@@ -1,23 +1,55 @@
-import { labelDictionary } from "./dictionary.js";
-import cleanedData from "./cleanedData.js";
+const labels = [
+  "energy",
+  "fat",
+  "saturates",
+  "carbohydrate",
+  "sugars",
+  "fibre",
+  "protein",
+  "salt",
+];
 
-function mapToLabel(label, value, category) {
-  const labelMapping = labelDictionary[label];
-  filterUndefinedLabels(labelMapping, value, category);
+function processData(arr) {
+  labelCheck(arr);
 }
 
-function filterUndefinedLabels(label, value, category) {
-  if (label != undefined) {
-    cleanedProductData(label, value, category);
+function labelCheck(arr) {
+  let labelMapArr = [];
+
+  for (let i = 0; i < arr.length; i++) {
+    labels.forEach((word) => {
+      if (arr[i].includes(word)) {
+        const rawData = {
+          index: i,
+          type: word,
+          row: arr[i],
+        };
+        labelMapArr.push(rawData);
+      }
+    });
   }
+  identifyUnits(labelMapArr);
 }
 
-function cleanedProductData(label, value, category) {
-  cleanedData[category][label] = value;
+function identifyUnits(arr) {
+  const unitTokens = ["kcal", "kj", "g", "grams", "ml"];
+
+  for (let i = 0; i < arr.length; i++) {
+    unitTokens.forEach((unit) => {
+      if (!arr[i]["unit"]) {
+        arr[i]["unit"] = [];
+      }
+
+      if (arr[i].row.includes(unit)) {
+        arr[i]["unit"].push(unit);
+      }
+    });
+  }
+  console.log(arr);
 }
 
 // function convertKjToKcals() {
 //     const kjPerKcal = 4.184;
 // }
 
-export default mapToLabel;
+export default processData;

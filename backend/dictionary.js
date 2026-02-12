@@ -14,7 +14,6 @@ export const labelDictionary = {
   carbohydrate: "carbohydrates",
   "carbohydrate (g)": "carbohydrates",
   "of which sugars": "sugars",
-  "Of which sugars": "sugars",
   "of which sugars (g)": "sugars",
   fibre: "fibre",
   "fibre (g)": "fibre",
