@@ -1,0 +1,15 @@
+export const jammieDodgerDataRaw = [
+  "Jammie Dodgers Raspberry Flavour 140g",
+  "energy429 kcal77 kcal4%2000kcal",
+  "energy1807 kj325 kj4%8400 kj",
+  "fat14g2.5g4%70g",
+  "of which saturates6.5g1.2g6%20g",
+  "carbohydrate67g12g5%260g",
+  "of which sugars29g5.2g6%90g",
+  "fibre2.1g0.4g--",
+  "protein5.3g1.0g2%50g",
+  "salt0.56g0.10g2%6g",
+  "serving size = 1 biscuit (approx. 18g)",
+  "8 servings per pack",
+  "**reference intake of an average adult (8400 kj/2000 kcal)",
+];
