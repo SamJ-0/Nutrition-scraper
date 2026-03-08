@@ -30,33 +30,30 @@ function labelCheck(arr) {
       labelMapArr.push({ index: i, type: foundLabel, row: arr[i] });
     }
   }
-  identifyUnits(labelMapArr);
+  identifyValues(labelMapArr);
 }
 
-function identifyUnits(arr) {
-  const unitTokens = ["kcal", "kj", "g", "grams", "ml", "%"];
+function identifyValues(arr) {
+  let columnCount = 0;
 
   for (let i = 0; i < arr.length; i++) {
-    unitTokens.forEach((unit) => {
-      if (!arr[i]["unit"]) {
-        arr[i]["unit"] = [];
-      }
+    const valuesUnits = arr[i].row.match(
+      /(\d*\.?\d+)\s?(kcal|kj|g|%|grams|ml+)/gim,
+    );
 
-      if (arr[i].row.includes(unit)) {
-        arr[i]["unit"].push(unit);
-      }
-    });
-  }
-  identifyNumbers(arr);
-}
+    if (valuesUnits.length > columnCount) {
+      columnCount = valuesUnits.length;
+    }
 
-function identifyNumbers(arr) {
-  for (let i = 0; i < arr.length; i++) {
-    const row = arr[i].row;
-    const numbers = row.match(/\d+\.?\d*/g);
-    const parsedNums = numbers.map((num) => parseFloat(num));
+    const splitValuesUnits = valuesUnits.map((valuesUnits) =>
+      valuesUnits.split(" "),
+    );
 
+    const parsedNums = splitValuesUnits.map((value) => parseFloat(value));
     arr[i]["values"] = parsedNums;
+
+    const units = splitValuesUnits.map((unit) => unit[1]);
+    arr[i]["units"] = units;
   }
   mapToSchemaLabel(arr);
 }
@@ -76,15 +73,21 @@ function mapToSchemaLabel(arr) {
     const checkLabelDictionary = labelDictionary[longestLabel];
     schemaLabels.push(checkLabelDictionary);
   }
-  // console.log(schemaLabels);
-  valueAssignment(arr);
+  // valueAssignment(arr);
+  console.log(schemaLabels);
 }
 
 function valueAssignment(arr) {
-  console.log(arr);
+  let count = 0;
+  let per100;
+  let perServing;
+  let refIntake;
   for (let i = 0; i < arr.length; i++) {
-    console.log(arr[i].values);
+    if (arr[i].values.length > count) {
+      count = arr[i].values.length;
+    }
   }
+  console.log(arr);
 }
 
 // function convertKjToKcals() {

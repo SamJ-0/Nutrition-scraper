@@ -45,6 +45,6 @@ async function nutritionScrape(productUrl) {
   }
 }
 
-processData(greekStyleYogurtDataRow);
+processData(dairyMilkDataRaw);
 
 export default nutritionScrape;
