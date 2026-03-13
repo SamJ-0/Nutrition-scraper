@@ -13,24 +13,41 @@ const labels = [
 ];
 
 function processData(arr) {
-  labelCheck(arr);
+  checkLabels(arr);
 }
 
-function labelCheck(arr) {
-  let labelMapArr = [];
+function checkLabels(arr) {
+  let labelsMapped = [];
+  let foundIndex = [];
 
   for (let i = 0; i < arr.length; i++) {
     let foundLabel = [];
+
     labels.forEach((word) => {
       if (arr[i].includes(word)) {
+        foundIndex.push(i);
         foundLabel.push(word);
       }
     });
+
     if (foundLabel.length > 0) {
-      labelMapArr.push({ index: i, type: foundLabel, row: arr[i] });
+      labelsMapped.push({
+        index: i,
+        type: foundLabel,
+        row: arr[i],
+        metaData: [checkForMetaData(arr, foundIndex)],
+      });
     }
   }
-  identifyValues(labelMapArr);
+  identifyValues(labelsMapped);
+}
+
+function checkForMetaData(arr, foundIndex) {
+  for (let i = arr.length - 1; i >= 0; i--) {
+    if (!foundIndex.includes(i)) {
+      return arr[i];
+    }
+  }
 }
 
 function identifyValues(arr) {
