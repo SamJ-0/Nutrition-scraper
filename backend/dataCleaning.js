@@ -34,16 +34,10 @@ function labelCheck(arr) {
 }
 
 function identifyValues(arr) {
-  let columnCount = 0;
-
   for (let i = 0; i < arr.length; i++) {
     const valuesUnits = arr[i].row.match(
       /(\d*\.?\d+)\s?(kcal|kj|g|%|grams|ml+)/gim,
     );
-
-    if (valuesUnits.length > columnCount) {
-      columnCount = valuesUnits.length;
-    }
 
     const splitValuesUnits = valuesUnits.map((valuesUnits) =>
       valuesUnits.split(" "),
@@ -72,26 +66,52 @@ function mapToSchemaLabel(arr) {
 
     const checkLabelDictionary = labelDictionary[longestLabel];
     schemaLabels.push(checkLabelDictionary);
+    arr[i].type = schemaLabels[i];
   }
-  // valueAssignment(arr);
-  console.log(schemaLabels);
+  columnAssignment(arr);
 }
 
-function valueAssignment(arr) {
-  let count = 0;
-  let per100;
-  let perServing;
+function columnAssignment(arr) {
+  let columnCount = 0;
   let refIntake;
+
   for (let i = 0; i < arr.length; i++) {
-    if (arr[i].values.length > count) {
-      count = arr[i].values.length;
+    if (arr[i].values.length > columnCount) {
+      columnCount = arr[i].values.length;
+    }
+
+    if (columnCount > 0) {
+      arr[i]["per100"] = 0;
+    }
+
+    if (arr[i].units.includes("%")) {
+      arr[i]["refIntake"] = arr[i].units.indexOf("%");
+      refIntake = arr[i].units.indexOf("%");
+    }
+
+    if (columnCount > refIntake) {
+      arr[i]["perServing"] = columnCount - refIntake;
+    }
+  }
+  convertKjToKcals(arr);
+}
+
+function convertKjToKcals(arr) {
+  const kjPerKcal = 4.184;
+
+  for (let i = 0; i < arr.length; i++) {
+    const per100 = arr[i].per100;
+    const perServing = arr[i].perServing;
+
+    if (arr[i].units.includes("kj") && !arr[i].units.includes("kcal")) {
+      const per100Kcals = Math.ceil(arr[i].values[per100] / kjPerKcal);
+      const perServingKcals = Math.ceil(arr[i].values[perServing] / kjPerKcal);
+      const kcalConversion = [per100Kcals, perServingKcals];
+
+      arr[i]["kcalConversion"] = kcalConversion;
     }
   }
   console.log(arr);
 }
-
-// function convertKjToKcals() {
-//     const kjPerKcal = 4.184;
-// }
 
 export default processData;

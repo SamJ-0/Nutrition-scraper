@@ -3,8 +3,6 @@ import * as cheerio from "cheerio";
 import { selectors as defaultSelectors } from "./selectors.js";
 import processData from "./dataCleaning.js";
 import { dairyMilkDataRaw } from "./sampleData/dairyMilkDataRaw.js";
-import { greekStyleYogurtDataRow } from "./sampleData/greekStyleYogurtDataRaw.js";
-import { bagelDataRaw } from "./sampleData/bagelDataRaw.js";
 
 let selectors = defaultSelectors;
 
