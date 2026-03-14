@@ -18,14 +18,14 @@ function processData(arr) {
 
 function checkLabels(arr) {
   let labelsMapped = [];
-  let foundIndex = [];
+  let foundLabelIndex = [];
 
   for (let i = 0; i < arr.length; i++) {
     let foundLabel = [];
 
     labels.forEach((word) => {
       if (arr[i].includes(word)) {
-        foundIndex.push(i);
+        foundLabelIndex.push(i);
         foundLabel.push(word);
       }
     });
@@ -33,21 +33,13 @@ function checkLabels(arr) {
     if (foundLabel.length > 0) {
       labelsMapped.push({
         index: i,
+        foundLabelIndex: foundLabelIndex,
         type: foundLabel,
         row: arr[i],
-        metaData: [checkForMetaData(arr, foundIndex)],
       });
     }
   }
   identifyValues(labelsMapped);
-}
-
-function checkForMetaData(arr, foundIndex) {
-  for (let i = arr.length - 1; i >= 0; i--) {
-    if (!foundIndex.includes(i)) {
-      return arr[i];
-    }
-  }
 }
 
 function identifyValues(arr) {
