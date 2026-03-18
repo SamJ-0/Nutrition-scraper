@@ -18,24 +18,27 @@ function processData(arr) {
 
 function checkLabels(arr) {
   let labelsMapped = [];
-  let foundLabelIndex = [];
+  let metaData = [];
 
   for (let i = 0; i < arr.length; i++) {
     let foundLabel = [];
 
     labels.forEach((word) => {
       if (arr[i].includes(word)) {
-        foundLabelIndex.push(i);
         foundLabel.push(word);
       }
     });
 
+    if (foundLabel.length === 0) {
+      metaData.push(arr[i]);
+    }
+
     if (foundLabel.length > 0) {
       labelsMapped.push({
         index: i,
-        foundLabelIndex: foundLabelIndex,
         type: foundLabel,
         row: arr[i],
+        metaData: metaData,
       });
     }
   }
@@ -43,19 +46,20 @@ function checkLabels(arr) {
 }
 
 function identifyValues(arr) {
+  const regex = /(\d*\.?\d+)\s?(kcal|kj|g|%|grams|ml+)/gim;
+
   for (let i = 0; i < arr.length; i++) {
-    const valuesUnits = arr[i].row.match(
-      /(\d*\.?\d+)\s?(kcal|kj|g|%|grams|ml+)/gim,
-    );
+    const string = arr[i].row;
+    let numbers = [];
+    let units = [];
 
-    const splitValuesUnits = valuesUnits.map((valuesUnits) =>
-      valuesUnits.split(" "),
-    );
+    const matchUnits = [...string.matchAll(regex)];
 
-    const parsedNums = splitValuesUnits.map((value) => parseFloat(value));
-    arr[i]["values"] = parsedNums;
-
-    const units = splitValuesUnits.map((unit) => unit[1]);
+    matchUnits.forEach((value) => {
+      numbers.push(parseFloat(value[1]));
+      units.push(value[2]);
+    });
+    arr[i]["values"] = numbers;
     arr[i]["units"] = units;
   }
   mapToSchemaLabel(arr);

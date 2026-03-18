@@ -1,4 +1,4 @@
-const cleanedData = {
+const cleanedDataTemplate = {
   per100g: {
     energy_kj: "",
     energy_kcals: "",
